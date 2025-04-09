@@ -47,7 +47,7 @@ import { Head, Link } from '@inertiajs/vue3';
                 <div
                     class="relative -mb-px aspect-[335/150] w-full shrink-0 overflow-hidden rounded-t-lg bg-[#fff2f2] dark:bg-[#1D0002] lg:-ml-px lg:mb-0 lg:aspect-auto lg:w-[438px] lg:rounded-r-lg lg:rounded-t-none"
                 >
-                    <div class="flex justify-center flex-col items-center gap-2 p-6 lg:gap-4 lg:p-8">
+                    <div class="text-black dark:text-white flex justify-center flex-col items-center gap-2 p-6 lg:gap-4 lg:p-8">
                         <AppLogoIcon
                             class="absolute -top-2 -left-2 h-full w-full max-w-none -translate-x-1/2 -translate-y-1/2 rotate-[10deg] transform-gpu opacity-10"
                             style="filter: blur(2px)"

@@ -8,6 +8,10 @@ import { Label } from '@/components/ui/label';
 import AuthBase from '@/layouts/AuthLayout.vue';
 import { Head, useForm } from '@inertiajs/vue3';
 import { LoaderCircle } from 'lucide-vue-next';
+import {useToast} from 'vue-toast-notification';
+import 'vue-toast-notification/dist/theme-sugar.css';
+
+const $toast = useToast();
 
 defineProps<{
     status?: string;
@@ -23,6 +27,12 @@ const form = useForm({
 const submit = () => {
     form.post(route('login'), {
         onFinish: () => form.reset('password'),
+    });
+    $toast.open({
+        message: 'You successfully logged in!',
+        type: 'success',
+        position: 'top',
+        duration: 3000,
     });
 };
 </script>
