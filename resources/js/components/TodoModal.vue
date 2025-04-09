@@ -53,6 +53,10 @@
 import { ref, defineEmits } from 'vue';
 import { Button } from '@/components/ui/button';
 import { router } from '@inertiajs/vue3';
+import {useToast} from 'vue-toast-notification';
+import 'vue-toast-notification/dist/theme-sugar.css';
+
+const $toast = useToast();
 
 const emits = defineEmits(['close', 'save']);
 
@@ -72,6 +76,12 @@ async function submitTodo() {
         await router.post(route('todos.store'), form.value);
         emits('save', form.value);
         closeModal();
+        $toast.open({
+            message: 'You added a new todo!',
+            type: 'success',
+            position: 'top',
+            duration: 2000,
+        });
     } catch (error) {
         console.error('Failed to save todo:', error);
         alert('An error occurred while saving the todo.');

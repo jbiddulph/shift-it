@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
-import { Head } from '@inertiajs/vue3';
-import PlaceholderPattern from '../components/PlaceholderPattern.vue';
+import { Head, usePage } from '@inertiajs/vue3';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -10,6 +9,13 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: '/dashboard',
     },
 ];
+
+// Access todos from the Inertia page props
+const { props } = usePage();
+console.log('Todos:', props);
+const todos = props.todos || []; // Fallback to an empty array
+
+
 </script>
 
 <template>
@@ -17,20 +23,26 @@ const breadcrumbs: BreadcrumbItem[] = [
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
-            <div class="grid auto-rows-min gap-4 md:grid-cols-3">
-                <div class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-                    <PlaceholderPattern />
-                </div>
-                <div class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-                    <PlaceholderPattern />
-                </div>
-                <div class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-                    <PlaceholderPattern />
-                </div>
-            </div>
-            <div class="relative min-h-[100vh] flex-1 rounded-xl border border-sidebar-border/70 dark:border-sidebar-border md:min-h-min">
-                <PlaceholderPattern />
-            </div>
+            <h1 class="text-2xl font-bold">Your Todos</h1>
+            <ul class="space-y-4">
+                <li
+                    v-for="todo in todos"
+                    :key="todo.id"
+                    class="p-4 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800"
+                >
+                    <h2 class="text-lg font-semibold text-black dark:text-white">{{ todo.title }}</h2>
+                    <p class="text-gray-600 dark:text-gray-400">{{ todo.description }}</p>
+                    <span
+                        class="inline-block mt-2 px-2 py-1 text-sm font-medium rounded-full"
+                        :class="{
+                            'bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100': todo.completed,
+                            'bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-100': !todo.completed,
+                        }"
+                    >
+                        {{ todo.completed ? 'Completed' : 'Pending' }}
+                    </span>
+                </li>
+            </ul>
         </div>
     </AppLayout>
 </template>

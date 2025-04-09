@@ -32,7 +32,7 @@ const submit = () => {
         message: 'You successfully logged in!',
         type: 'success',
         position: 'top',
-        duration: 3000,
+        duration: 2000,
     });
 };
 </script>

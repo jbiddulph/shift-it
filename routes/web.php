@@ -8,9 +8,9 @@ Route::get('/', function () {
     return Inertia::render('Welcome');
 })->name('home');
 
-Route::get('dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/dashboard', [TodoController::class, 'index'])->name('dashboard');
+});
 
 Route::post('/todos', [TodoController::class, 'store'])->name('todos.store');
 

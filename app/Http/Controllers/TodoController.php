@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Todo;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class TodoController extends Controller
 {
@@ -12,7 +13,13 @@ class TodoController extends Controller
      */
     public function index()
     {
-        //
+        // Fetch todos for the authenticated user
+        $todos = Todo::where('user_id', auth()->id())->get();
+
+        // Pass todos to the Dashboard view
+        return Inertia::render('Dashboard', [
+            'todos' => $todos,
+        ]);
     }
 
     /**
