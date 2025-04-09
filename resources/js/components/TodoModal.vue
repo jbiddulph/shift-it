@@ -3,37 +3,37 @@
         v-if="isOpen"
         class="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
     >
-        <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
+        <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-md dark:bg-[#1a1a1a]">
             <header class="flex justify-between items-center border-b pb-2 mb-4">
-                <h2 class="text-lg font-semibold">Add Todo</h2>
-                <button @click="closeModal" class="text-gray-500 hover:text-gray-700">
+                <h2 class="text-lg font-semibold text-black dark:text-white">Add Todo</h2>
+                <button @click="closeModal" class="text-gray-500 hover:text-gray-700 dark:text-gray-300">
                     &times;
                 </button>
             </header>
             <form @submit.prevent="submitTodo">
                 <div class="mb-4">
-                    <label for="title" class="block text-sm font-medium text-gray-700">Title</label>
+                    <label for="title" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Title</label>
                     <input
                         v-model="form.title"
                         type="text"
                         id="title"
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm text-black dark:text-white bg-white dark:bg-[#2a2a2a]"
                         required
                     />
                 </div>
                 <div class="mb-4">
-                    <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
+                    <label for="description" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Description</label>
                     <textarea
                         v-model="form.description"
                         id="description"
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm text-black dark:text-white bg-white dark:bg-[#2a2a2a]"
                     ></textarea>
                 </div>
                 <div class="flex justify-end">
                     <button
                         type="button"
                         @click="closeModal"
-                        class="mr-2 px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200"
+                        class="mr-2 px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 dark:text-gray-300 dark:bg-[#3a3a3a] dark:hover:bg-[#4a4a4a]"
                     >
                         Cancel
                     </button>
@@ -51,6 +51,7 @@
 
 <script setup lang="ts">
 import { ref, defineEmits } from 'vue';
+import { router } from '@inertiajs/vue3';
 
 const emits = defineEmits(['close', 'save']);
 
@@ -65,8 +66,14 @@ function closeModal() {
     emits('close');
 }
 
-function submitTodo() {
-    emits('save', form.value);
-    closeModal();
+async function submitTodo() {
+    try {
+        await router.post(route('todos.store'), form.value);
+        emits('save', form.value);
+        closeModal();
+    } catch (error) {
+        console.error('Failed to save todo:', error);
+        alert('An error occurred while saving the todo.');
+    }
 }
 </script>

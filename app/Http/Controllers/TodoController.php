@@ -34,9 +34,14 @@ class TodoController extends Controller
             'completed' => 'boolean',
         ]);
 
-        $todo = auth()->user()->todos()->create($request->all());
+        $todo = Todo::create([
+            'title' => $request->title,
+            'description' => $request->description,
+            'completed' => $request->completed ?? false,
+            'user_id' => auth()->id(), // Ensure the todo is linked to the authenticated user
+        ]);
 
-        return $todo;
+        return redirect()->back()->with('success', 'Todo created successfully!');
     }
 
     /**
