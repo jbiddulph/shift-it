@@ -18,6 +18,10 @@ class Todo extends Model
         'completed',
     ];
 
+    protected $attributes = [
+        'status' => 'Pending',
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class);

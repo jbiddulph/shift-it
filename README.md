@@ -1,4 +1,4 @@
-# Shift-it
+# ShiftList
 
 <p align="center">
   <svg xmlns="http://www.w3.org/2000/svg" color="#ffffff" width="64" height="58">
@@ -6,7 +6,7 @@
   </svg>
 </p>
 
-Shift-it is a task management application designed to help you organize and shift your to-do list efficiently.
+ShiftList is a task management application designed to help you organize and shift your to-do list efficiently.
 
 ## Installation
 

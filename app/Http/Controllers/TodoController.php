@@ -22,12 +22,19 @@ class TodoController extends Controller
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function updateStatus(Request $request, Todo $todo)
     {
-        //
+        // Ensure the authenticated user owns the todo
+        if ($todo->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized action.');
+        }
+        // Validate the status input
+        $request->validate([
+            'status' => 'required|string|in:Pending,In Progress,In Testing,Complete',
+        ]);
+        // Update the status
+        $todo->update(['status' => $request->status]);
+        return response()->json(['message' => 'Todo status updated successfully.']);
     }
 
     /**
@@ -52,34 +59,17 @@ class TodoController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     */
-    public function show(Todo $todo)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Todo $todo)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Todo $todo)
-    {
-        //
-    }
-
-    /**
      * Remove the specified resource from storage.
      */
     public function destroy(Todo $todo)
     {
-        //
+        // Ensure the authenticated user owns the todo
+        if ($todo->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $todo->delete();
+
+        return response()->json(['message' => 'Todo deleted successfully.']);
     }
 }
