@@ -1,10 +1,6 @@
-# ShiftList
+![ShiftList Banner](https://res.cloudinary.com/dagb1kdy2/image/upload/v1744305713/snro22zljepf5fiowtnt.png)
 
-<p align="center">
-  <svg xmlns="http://www.w3.org/2000/svg" color="#ffffff" width="64" height="58">
-    <path d="M19 3h-1a7.973 7.973 0 0 0-6 2.727A7.973 7.973 0 0 0 6 3H5V0L0 5.113 5 10V7h1a4 4 0 0 1 4 4v11h4V11a4 4 0 0 1 4-4h1v3l5-4.887L19 0z" fill="#d71964"/>
-  </svg>
-</p>
+# ShiftList
 
 ShiftList is a task management application designed to help you organize and shift your to-do list efficiently.
 
