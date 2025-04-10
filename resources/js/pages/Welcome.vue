@@ -53,7 +53,7 @@ import { Head, Link } from '@inertiajs/vue3';
                             style="filter: blur(2px)"
                         />
                         <div>
-                            Shift-it
+                            ShiftList
                         </div>
                         <i>
                             Shifting your todo list
