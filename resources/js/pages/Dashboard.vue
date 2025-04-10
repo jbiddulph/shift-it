@@ -193,7 +193,7 @@ function addTodo(newTodo: Todo) {
             </template>
             <p v-else class="text-gray-600 dark:text-gray-400">There are currently no tasks.</p>
 
-            <h2 class="text-2xl font-bold mt-8">Completed Tasks</h2>
+            <h2 class="text-2xl font-bold mt-8">Shifted Tasks</h2>
             <template v-if="completedTodos.length > 0">
                 <ul class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                     <li
