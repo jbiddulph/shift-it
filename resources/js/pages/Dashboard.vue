@@ -179,7 +179,7 @@ function addTodo(newTodo: Todo) {
                             <select
                                 v-model="todo.status"
                                 @change="updateStatus(todo)"
-                                class="border p-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                class="border p-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-black dark:text-white bg-white dark:bg-[#2a2a2a]"
                             >
                                 <option value="Pending">Pending</option>
                                 <option value="In Progress">In Progress</option>
@@ -219,7 +219,7 @@ function addTodo(newTodo: Todo) {
                             <select
                                 v-model="todo.status"
                                 @change="updateStatus(todo)"
-                                class="border p-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                class="border p-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-black dark:text-white bg-white dark:bg-[#2a2a2a]"
                             >
                                 <option value="Pending">Pending</option>
                                 <option value="In Progress">In Progress</option>
