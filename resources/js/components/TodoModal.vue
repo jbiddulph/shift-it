@@ -10,23 +10,23 @@
                     &times;
                 </button>
             </header>
-            <form @submit.prevent="submitTodo">
+            <form @submit.prevent="addTodo">
                 <div class="mb-4">
                     <label for="title" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Title</label>
                     <input
-                        v-model="form.title"
+                        v-model="newTodo.title"
                         type="text"
                         id="title"
-                        class="p-2 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm text-black dark:text-white bg-white dark:bg-[#2a2a2a]"
+                        class="p-2 border mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm text-black dark:text-white bg-white dark:bg-[#2a2a2a]"
                         required
                     />
                 </div>
                 <div class="mb-4">
                     <label for="description" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Description</label>
                     <textarea
-                        v-model="form.description"
+                        v-model="newTodo.description"
                         id="description"
-                        class="p-2 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm text-black dark:text-white bg-white dark:bg-[#2a2a2a]"
+                        class="p-2 border mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm text-black dark:text-white bg-white dark:bg-[#2a2a2a]"
                     ></textarea>
                 </div>
                 <div class="flex justify-end">
@@ -52,18 +52,18 @@
 <script setup lang="ts">
 import { ref, defineEmits } from 'vue';
 import { Button } from '@/components/ui/button';
-import { router } from '@inertiajs/vue3';
+import axios from 'axios';
 import { useToast } from 'vue-toast-notification';
 import 'vue-toast-notification/dist/theme-sugar.css';
 
 const $toast = useToast();
 
-const emits = defineEmits(['close', 'save']);
-
+const emits = defineEmits(['close', 'save', 'todo-added']);
 const isOpen = ref(true);
-const form = ref({
+const newTodo = ref({
     title: '',
     description: '',
+    status: 'Pending',
 });
 
 function closeModal() {
@@ -71,22 +71,47 @@ function closeModal() {
     emits('close');
 }
 
-async function submitTodo() {
-    try {
-        await router.post(route('todos.store'), form.value);
-        emits('save', form.value);
-        closeModal();
+function resetNewTodo() {
+    newTodo.value = {
+        title: '',
+        description: '',
+        status: 'Pending',
+    };
+}
+
+function addTodo() {
+    console.log('New Todo:', newTodo.value); // Debugging: Log the newTodo object
+    if (!newTodo.value.title.trim()) {
         $toast.open({
-            message: 'You added a new todo!',
-            type: 'success',
+            message: 'Title is required!',
+            type: 'error',
             position: 'top',
             duration: 2000,
         });
-        // Reload the entire Dashboard component to fetch updated todos
-        await router.reload();
-    } catch (error) {
-        console.error('Failed to save todo:', error);
-        alert('An error occurred while saving the todo.');
+        return;
     }
+
+    axios.post('/todos', newTodo.value)
+        .then((response) => {
+            // Emit the new todo to the parent component
+            emits('todo-added', newTodo.value); // Ensure the full todo object is emitted
+            closeModal();
+            $toast.open({
+                message: 'You added a new todo!',
+                type: 'success',
+                position: 'top',
+                duration: 2000,
+            });
+            resetNewTodo(); // Reset the form
+        })
+        .catch((error) => {
+            console.error('Error adding todo:', error);
+            $toast.open({
+                message: 'Failed to add todo.',
+                type: 'error',
+                position: 'top',
+                duration: 2000,
+            });
+        });
 }
 </script>

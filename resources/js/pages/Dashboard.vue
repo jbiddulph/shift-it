@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
+import TodoModal from '@/components/TodoModal.vue';
 import { type BreadcrumbItem } from '@/types';
 import { Head, usePage } from '@inertiajs/vue3';
+import { Button } from '@/components/ui/button';
 import axios from 'axios';
 import { useToast } from 'vue-toast-notification';
 import 'vue-toast-notification/dist/theme-sugar.css';
-import { computed, reactive } from 'vue';
+import { computed, ref, watch } from 'vue';
 import Swal from 'sweetalert2';
 
 const $toast = useToast();
@@ -19,7 +21,13 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 // Access todos from the Inertia page props
 const { props } = usePage();
-const todos = reactive(props.todos || []); // Make todos reactive
+const todos = ref<Todo[]>(Array.isArray(props.todos) ? props.todos : []); // Ensure todos is always an array
+
+const isModalOpen = ref(false); // Manage modal state here
+
+function openModal() {
+    isModalOpen.value = true;
+}
 
 interface Todo {
     id: number;
@@ -29,14 +37,16 @@ interface Todo {
 }
 
 // Computed properties to filter todos
-const pendingTodos = computed(() => todos.filter((todo) => todo.status !== 'Complete'));
-const completedTodos = computed(() => todos.filter((todo) => todo.status === 'Complete'));
+const completedTodos = computed(() => todos.value.filter((todo) => todo.status === 'Complete'));
 
 async function updateStatus(todo: Todo): Promise<void> {
     try {
         await axios.patch(`/todos/${todo.id}/status`, {
             status: todo.status,
         });
+
+        // No need to remove the todo from the todos array.
+        // The computed properties will automatically update the UI.
         $toast.open({
             message: 'Updated task status successfully!',
             type: 'success',
@@ -81,9 +91,9 @@ async function deleteTodo(todoId: number): Promise<void> {
             });
 
             // Remove the deleted todo from the todos array
-            const index = todos.findIndex((todo) => todo.id === todoId);
+            const index = todos.value.findIndex((todo) => todo.id === todoId);
             if (index !== -1) {
-                todos.splice(index, 1);
+                todos.value.splice(index, 1);
             }
         }
     } catch (error) {
@@ -96,6 +106,11 @@ async function deleteTodo(todoId: number): Promise<void> {
         });
     }
 }
+
+function addTodo(newTodo: Todo) {
+    console.log('Adding new todo:', newTodo); // Debugging: Log the newTodo object
+    todos.value.push(newTodo);
+}
 </script>
 
 <template>
@@ -103,13 +118,51 @@ async function deleteTodo(todoId: number): Promise<void> {
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
-            <h1 class="text-2xl font-bold">Your Tasks</h1>
-            <template v-if="pendingTodos.length > 0">
+            <div class="flex items-center justify-between">
+                <h1 class="text-2xl font-bold">Your Tasks</h1>
+                <div class="mb-4">
+                    <Button
+                        variant="pop"
+                        size="icon"
+                        class="w-full px-4 cursor-pointer lg:flex"
+                        @click="openModal"
+                    >
+                        Add Todo
+                    </Button>
+                </div>
+            </div>
+
+            <!-- Legend -->
+            <div class="mb-4 flex gap-4">
+                <div class="flex items-center gap-2">
+                    <span class="w-4 h-4 block bg-[#ffe8f6] rounded"></span>
+                    <span>Pending</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="w-4 h-4 block bg-[#3cbf8e] rounded"></span>
+                    <span>In Progress</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="w-4 h-4 block bg-[#f48c3c] rounded"></span>
+                    <span>In Testing</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="w-4 h-4 block bg-[#d71964] rounded"></span>
+                    <span>Completed</span>
+                </div>
+            </div>
+
+            <template v-if="todos.filter(todo => todo.status !== 'Complete').length > 0">
                 <ul class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                     <li
-                        v-for="todo in pendingTodos"
+                        v-for="todo in todos.filter(todo => todo.status !== 'Complete')"
                         :key="todo.id"
-                        class="relative p-4 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800"
+                        :class="{
+                            'bg-[#ffe8f6]': todo.status === 'Pending',
+                            'bg-[#3cbf8e]': todo.status === 'In Progress',
+                            'bg-[#f48c3c]': todo.status === 'In Testing',
+                        }"
+                        class="relative p-4 rounded-lg"
                     >
                         <!-- Delete Button -->
                         <button
@@ -122,16 +175,19 @@ async function deleteTodo(todoId: number): Promise<void> {
 
                         <h2 class="text-lg font-semibold text-black dark:text-white">{{ todo.title }}</h2>
                         <p class="text-gray-600 dark:text-gray-400">{{ todo.description }}</p>
-                        <select
-                            v-model="todo.status"
-                            @change="updateStatus(todo)"
-                            class="mt-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                        >
-                            <option value="Pending">Pending</option>
-                            <option value="In Progress">In Progress</option>
-                            <option value="In Testing">In Testing</option>
-                            <option value="Complete">Complete</option>
-                        </select>
+                        <div class="flex items-center gap-2 text-sm mt-4">
+                            <span>Status: </span>
+                            <select
+                                v-model="todo.status"
+                                @change="updateStatus(todo)"
+                                class="border p-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                            >
+                                <option value="Pending">Pending</option>
+                                <option value="In Progress">In Progress</option>
+                                <option value="In Testing">In Testing</option>
+                                <option value="Complete">Complete</option>
+                            </select>
+                        </div>
                     </li>
                 </ul>
             </template>
@@ -143,7 +199,10 @@ async function deleteTodo(todoId: number): Promise<void> {
                     <li
                         v-for="todo in completedTodos"
                         :key="todo.id"
-                        class="relative p-4 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800"
+                        :class="{
+                            'bg-[#d71964]': todo.status === 'Complete',
+                        }"
+                        class="relative p-4 rounded-lg"
                     >
                         <!-- Delete Button -->
                         <button
@@ -154,22 +213,32 @@ async function deleteTodo(todoId: number): Promise<void> {
                             ✖
                         </button>
 
-                        <h2 class="text-lg font-semibold text-black dark:text-white">{{ todo.title }}</h2>
-                        <p class="text-gray-600 dark:text-gray-400">{{ todo.description }}</p>
-                        <select
-                            v-model="todo.status"
-                            @change="updateStatus(todo)"
-                            class="mt-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                        >
-                            <option value="Pending">Pending</option>
-                            <option value="In Progress">In Progress</option>
-                            <option value="In Testing">In Testing</option>
-                            <option value="Complete">Complete</option>
-                        </select>
+                        <h2 class="text-lg font-semibold text-white dark:text-white">{{ todo.title }}</h2>
+                        <p class="text-gray-400 dark:text-gray-400">{{ todo.description }}</p> 
+                        <div class="flex items-center mt-2 gap-2 text-sm mt-4">
+                            <span>Status: </span>
+                            <select
+                                v-model="todo.status"
+                                @change="updateStatus(todo)"
+                                class="border p-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                            >
+                                <option value="Pending">Pending</option>
+                                <option value="In Progress">In Progress</option>
+                                <option value="In Testing">In Testing</option>
+                                <option value="Complete">Complete</option>
+                            </select>
+                        </div>
                     </li>
                 </ul>
             </template>
             <p v-else class="text-gray-600 dark:text-gray-400">There are currently no completed tasks.</p>
         </div>
+
+        <!-- TodoModal Component -->
+        <TodoModal 
+            v-if="isModalOpen" 
+            @close="isModalOpen = false" 
+            @todo-added="addTodo" 
+        />
     </AppLayout>
 </template>

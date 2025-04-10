@@ -15,7 +15,6 @@ import {
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import UserMenuContent from '@/components/UserMenuContent.vue';
-import TodoModal from '@/components/TodoModal.vue';
 import { getInitials } from '@/composables/useInitials';
 import type { BreadcrumbItem, NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/vue3';
@@ -26,16 +25,6 @@ interface Props {
     breadcrumbs?: BreadcrumbItem[];
 }
 
-const isModalOpen = ref(false);
-
-function openModal() {
-    isModalOpen.value = true;
-}
-
-function handleSave(todo) {
-    console.log('Todo saved:', todo);
-    // Add logic to save the todo (e.g., API call)
-}
 const props = withDefaults(defineProps<Props>(), {
     breadcrumbs: () => [],
 });
@@ -95,16 +84,6 @@ const mainNavItems: NavItem[] = [
                 <!-- Desktop Menu -->
 
                 <div class="ml-auto flex items-center space-x-2">
-                    <div class="ml-auto flex items-center space-x-2">
-                        <Button
-                            variant="pop"
-                            size="icon"
-                            class="w-full px-4 cursor-pointer lg:flex"
-                            @click="openModal"
-                        >
-                            ADD TODO
-                        </Button>
-                    </div>
                     <DropdownMenu>
                         <DropdownMenuTrigger :as-child="true">
                             <Button
@@ -133,7 +112,5 @@ const mainNavItems: NavItem[] = [
                 <Breadcrumbs :breadcrumbs="breadcrumbs" />
             </div>
         </div>
-        <!-- Modal -->
-        <TodoModal v-if="isModalOpen" @close="isModalOpen = false" @save="handleSave" />
     </div>
 </template>
