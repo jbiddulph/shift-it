@@ -53,7 +53,7 @@
 import { ref, defineEmits } from 'vue';
 import { Button } from '@/components/ui/button';
 import { router } from '@inertiajs/vue3';
-import {useToast} from 'vue-toast-notification';
+import { useToast } from 'vue-toast-notification';
 import 'vue-toast-notification/dist/theme-sugar.css';
 
 const $toast = useToast();
@@ -82,6 +82,8 @@ async function submitTodo() {
             position: 'top',
             duration: 2000,
         });
+        // Reload the entire Dashboard component to fetch updated todos
+        await router.reload();
     } catch (error) {
         console.error('Failed to save todo:', error);
         alert('An error occurred while saving the todo.');
