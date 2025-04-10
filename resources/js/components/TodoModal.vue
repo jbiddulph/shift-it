@@ -92,7 +92,7 @@ function addTodo() {
     }
 
     axios.post('/todos', newTodo.value)
-        .then((response) => {
+        .then(() => {
             // Emit the new todo to the parent component
             emits('todo-added', newTodo.value); // Ensure the full todo object is emitted
             closeModal();
