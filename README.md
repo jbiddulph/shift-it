@@ -10,7 +10,7 @@ Follow these steps to set up the application locally:
 
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/your-username/shift-it.git
+   git clone https://github.com/jbiddulph/shift-it.git
    cd shift-it
    ```
 
