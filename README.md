@@ -2,7 +2,7 @@
 
 # ShiftList
 
-ShiftList is a task management application designed to help you organize and shift your to-do list efficiently.
+ShiftList is a task management application built with Laravel (backend), Vue (frontend) and Inertia (the glue - no api needed) designed to help you organize and shift your to-do list efficiently.
 
 ## Installation
 
