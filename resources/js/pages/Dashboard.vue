@@ -132,27 +132,26 @@ function addTodo(newTodo: Todo) {
                 </div>
             </div>
 
-            <!-- Legend -->
-            <div class="mb-4 flex gap-4">
-                <div class="flex items-center gap-2">
-                    <span class="w-4 h-4 block bg-[#ffe8f6] rounded"></span>
-                    <span>Pending</span>
-                </div>
-                <div class="flex items-center gap-2">
-                    <span class="w-4 h-4 block bg-[#3cbf8e] rounded"></span>
-                    <span>In Progress</span>
-                </div>
-                <div class="flex items-center gap-2">
-                    <span class="w-4 h-4 block bg-[#f48c3c] rounded"></span>
-                    <span>In Testing</span>
-                </div>
-                <div class="flex items-center gap-2">
-                    <span class="w-4 h-4 block bg-[#d71964] rounded"></span>
-                    <span>Completed</span>
-                </div>
-            </div>
-
             <template v-if="todos.filter(todo => todo.status !== 'Complete').length > 0">
+                <!-- Legend -->
+                <div class="mb-4 flex gap-4">
+                    <div class="flex items-center gap-2">
+                        <span class="w-4 h-4 block bg-[#ffe8f6] rounded"></span>
+                        <span>Pending</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="w-4 h-4 block bg-[#3cbf8e] rounded"></span>
+                        <span>In Progress</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="w-4 h-4 block bg-[#f48c3c] rounded"></span>
+                        <span>In Testing</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="w-4 h-4 block bg-[#d71964] rounded"></span>
+                        <span>Completed</span>
+                    </div>
+                </div>
                 <ul class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                     <li
                         v-for="todo in todos.filter(todo => todo.status !== 'Complete')"
