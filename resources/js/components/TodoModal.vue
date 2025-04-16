@@ -92,9 +92,9 @@ function addTodo() {
     }
 
     axios.post('/todos', newTodo.value)
-        .then(() => {
-            // Emit the new todo to the parent component
-            emits('todo-added', newTodo.value); // Ensure the full todo object is emitted
+        .then((response) => {
+            // Emit the new todo with ID from the server response
+            emits('todo-added', response.data);
             closeModal();
             $toast.open({
                 message: 'You added a new todo!',

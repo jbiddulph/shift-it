@@ -55,7 +55,7 @@ class TodoController extends Controller
             'user_id' => auth()->id(), // Ensure the todo is linked to the authenticated user
         ]);
 
-        return redirect()->route('dashboard')->with('success', 'Todo created successfully!');
+        return response()->json($todo);
     }
 
     /**
