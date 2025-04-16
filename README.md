@@ -32,3 +32,8 @@ php artisan db:seed
 Install and build your frontend assets:
 npm install
 npm run build
+
+
+test account added at:
+User name: shift@shift.com
+Password: shift1234!
